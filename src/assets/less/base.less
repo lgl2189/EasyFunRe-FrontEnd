@@ -1,0 +1,113 @@
+body,
+div,
+dl,
+dt,
+dd,
+ul,
+ol,
+li,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+pre,
+code,
+form,
+fieldset,
+legend,
+input,
+textarea,
+p,
+blockquote,
+th,
+td {
+  margin: 0;
+  padding: 0;
+  outline: none;
+  background-color: transparent;
+}
+
+html {
+  background-color: rgb(244, 245, 247);
+}
+
+body {
+  background-color: transparent;
+}
+
+a {
+  text-decoration: none;
+  color: inherit;
+}
+
+// 禁止选中文本
+.unselectable {
+  /* Chrome/Safari/Opera */
+  -webkit-user-select: none;
+  /* Firefox */
+  -moz-user-select: none;
+  /* IE/Edge */
+  -ms-user-select: none;
+  /* 标准属性 */
+  user-select: none;
+}
+
+// 滚动条样式变量
+@scroll-container: .custom-scroll-class; // 容器选择器
+@scroll-width: 6px; // 滚动条宽度
+@scroll-radius: calc(@scroll-width / 2); // 滚动条圆角（自适应宽度）
+@scroll-thumb-color: rgba(150, 150, 150, 0.5); // 悬停时滑块颜色
+@scroll-thumb-hover-color: rgba(120, 120, 120, 0.7); // 滑块hover加深色
+@transition-duration: 0.2s; // 过渡动画时长
+
+// 滚动容器基础样式
+@{scroll-container} {
+  height: auto; // 容器高度
+  overflow: overlay; // 滚动条覆盖内容，不占空间
+  padding-right: 8px; // 避免内容被滚动条遮挡
+
+  // 滚动条核心样式
+  // 滚动条整体
+  &::-webkit-scrollbar {
+    width: @scroll-width;
+    background: transparent; // 透明背景
+  }
+
+  // 去掉上下箭头按钮
+  &::-webkit-scrollbar-button {
+    display: none;
+  }
+
+  // 滚动条轨道
+  &::-webkit-scrollbar-track {
+    background: transparent;
+    border-radius: @scroll-radius;
+  }
+
+  // 滚动条滑块
+  &::-webkit-scrollbar-thumb {
+    background: transparent;
+    border-radius: @scroll-radius;
+    transition: background @transition-duration ease;
+  }
+
+  // 容器hover时显示滑块
+  &:hover {
+
+    // 确保轨道也可见
+    &::-webkit-scrollbar {
+      background: transparent; // 保持透明，但触发可见性
+    }
+
+    &::-webkit-scrollbar-thumb {
+      background: @scroll-thumb-color;
+    }
+  }
+
+  // 滑块自身hover时加深颜色
+  &::-webkit-scrollbar-thumb:hover {
+    background: @scroll-thumb-hover-color;
+  }
+}

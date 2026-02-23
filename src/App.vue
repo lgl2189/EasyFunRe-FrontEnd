@@ -1,11 +1,21 @@
-<script setup></script>
+<script setup>
+import { ElConfigProvider } from 'element-plus'
+const zIndex = 3000
+const size = 'small'
+</script>
 
 <template>
-  <h1>You did it!</h1>
-  <p>
-    Visit <a href="https://vuejs.org/" target="_blank" rel="noopener">vuejs.org</a> to read the
-    documentation
-  </p>
+  <ElConfigProvider :size="size" :z-index="zIndex">
+    <div id="app" class="root">
+      <router-view></router-view>
+    </div>
+  </ElConfigProvider>
 </template>
 
-<style scoped></style>
+<style scoped>
+.root {
+  width: 100vw;
+  height: 100vh;
+  background-color: gainsboro;
+}
+</style>

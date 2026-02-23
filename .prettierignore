@@ -1,0 +1,9 @@
+ src/libs
+ node_modules
+ build/*.js
+ src/assets
+ public
+ dist
+ .eslintrc.js
+.vscode/
+*.min.js

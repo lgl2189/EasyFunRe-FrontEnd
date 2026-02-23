@@ -9,12 +9,31 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "vue": "^3.5.28"
+    "@element-plus/icons-vue": "^2.3.2",
+    "@stomp/stompjs": "^7.3.0",
+    "axios": "^1.13.5",
+    "dayjs": "^1.11.19",
+    "default-passive-events": "^4.0.0",
+    "element-plus": "^2.13.2",
+    "pinia": "^3.0.4",
+    "pinia-plugin-persistedstate": "^4.7.1",
+    "sockjs-client": "^1.6.1",
+    "vue": "^3.5.28",
+    "vue-router": "^5.0.3"
   },
   "devDependencies": {
+    "@babel/eslint-parser": "^7.28.6",
+    "@eslint/js": "^10.0.1",
     "@vitejs/plugin-vue": "^6.0.4",
+    "@vue/eslint-config-prettier": "^8.0.0",
+    "eslint": "^8.57.1",
+    "eslint-plugin-vue": "9.33.0",
+    "globals": "^17.3.0",
+    "less": "^4.5.1",
+    "prettier": "^3.8.1",
     "vite": "^7.3.1",
-    "vite-plugin-vue-devtools": "^8.0.6"
+    "vite-plugin-vue-devtools": "^8.0.6",
+    "vite-svg-loader": "^5.1.0"
   },
   "engines": {
     "node": "^20.19.0 || >=22.12.0"
