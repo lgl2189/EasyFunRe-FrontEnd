@@ -1,5 +1,6 @@
 <script setup>
 import { ElConfigProvider } from 'element-plus'
+import HeaderComponent from './components/common/HeaderComponent.vue'
 const zIndex = 3000
 const size = 'small'
 </script>
@@ -7,7 +8,8 @@ const size = 'small'
 <template>
   <ElConfigProvider :size="size" :z-index="zIndex">
     <div id="app" class="root">
-      <router-view></router-view>
+      <HeaderComponent></HeaderComponent>
+      <!-- <router-view></router-view> -->
     </div>
   </ElConfigProvider>
 </template>
