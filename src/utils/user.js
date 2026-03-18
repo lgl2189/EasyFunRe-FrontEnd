@@ -86,7 +86,7 @@ export const startTokenRefreshTimer = async () => {
   // 启动新定时器
   const now = Date.now()
   const expireAt = getAccessTokenExpireAt()
-  const delay = expireAt - now - REFRESH_BEFORE_EXPIRE - 3150 * 1000
+  const delay = expireAt - now - REFRESH_BEFORE_EXPIR
   if (delay > 0) {
     refreshTimer = setTimeout(async () => {
       await processRefreshToken()
