@@ -1,8 +1,9 @@
 <script setup>
+// 默认高度64px
 import { ref } from 'vue'
 import UserLoginComponent from '../user/UserLoginComponent.vue'
 import { useUserStore } from '@/stores/user'
-import UserInfoHeaderComponent from '../user/UserInfoHeaderComponent.vue'
+import HeaderUserCard from '../user/HeaderUserCard.vue'
 // 参数
 defineProps({
   // embed嵌入式用于嵌入到页面中，float悬浮式用于在页面中悬浮跟随显示
@@ -35,7 +36,7 @@ const handleClickLoginBtn = () => {
         <UserLoginComponent v-model:show-modal="isShowLoginModal"></UserLoginComponent>
       </div>
       <div>
-        <UserInfoHeaderComponent> </UserInfoHeaderComponent>
+        <HeaderUserCard />
       </div>
     </div>
   </div>

@@ -7,6 +7,8 @@ import { useUserStore } from '@/stores/user'
 import { User, VideoPlay, Star, Moon, SwitchButton, ArrowRight } from '@element-plus/icons-vue'
 // 引入通用按钮组件
 import UniversalActionBtn from '@/components/common/UniversalActionBtn.vue'
+import { processLogout } from '@/utils/user'
+import { ElMessage } from 'element-plus'
 
 // 路由实例
 const router = useRouter()
@@ -32,7 +34,10 @@ const handleGoToSpace = () => {
 }
 
 // 退出登录处理
-const handleLogout = () => {}
+const handleLogout = () => {
+  processLogout()
+  ElMessage.success('退出登录成功')
+}
 
 // 组件挂载后获取用户信息（如需接口请求，放开下方注释即可）
 // onMounted(() => {
