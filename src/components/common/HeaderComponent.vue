@@ -48,6 +48,9 @@ const handleClickLoginBtn = () => {
   background-color: aliceblue;
   display: flex;
   align-items: center;
+  /* 添加下边框和阴影 */
+  border-bottom: 1px solid #e5e7eb;
+  box-shadow: 0 1px 3px 0 rgba(227, 229, 231, 0.1);
   .logo-wrap {
   }
   .header-primary {
