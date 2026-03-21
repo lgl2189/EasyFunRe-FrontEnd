@@ -1,9 +1,6 @@
 import { useUserStore } from '@/stores/user'
 import { generateFingerprint } from './auth'
-import { loginByToken } from '@/apis/user'
-import { RESPONSE_SUCCESS } from '@/constant/response-constant'
-import { ElMessage } from 'element-plus'
-import { getAccessTokenExpireAt, processLogout, startTokenRefreshTimer } from './user'
+import { initUserLoginStatus } from './user'
 
 export const initUserEnvironment = async () => {
   const userStore = useUserStore()
@@ -15,15 +12,6 @@ export const initUserEnvironment = async () => {
     return Promise.resolve()
   }
   // 初始化用户登录状态
-  const res = await loginByToken()
-  if (!res.status === RESPONSE_SUCCESS) {
-    ElMessage.error('自动登陆失败，请重新登录' + res.message)
-    processLogout()
-    return Promise.reject(res.message)
-  }
-  const { userId } = res.data
-  userStore.userId = userId
-  userStore.isLogin = true
-  startTokenRefreshTimer()
+  await initUserLoginStatus()
   return Promise.resolve()
 }

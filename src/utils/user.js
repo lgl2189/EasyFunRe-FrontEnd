@@ -1,4 +1,4 @@
-import { refreshAccessToken } from '@/apis/user'
+import { loginByToken, refreshAccessToken } from '@/apis/user'
 import { RESPONSE_SUCCESS } from '@/constant/response-constant'
 import { useUserStore } from '@/stores/user'
 import { ElMessage } from 'element-plus'
@@ -20,17 +20,19 @@ export const processInitialLogin = (res) => {
   startTokenRefreshTimer()
 }
 
-const processRefreshToken = async () => {
+export const processRefreshToken = async () => {
   const res = await refreshAccessToken()
   if (res.status !== RESPONSE_SUCCESS) {
     console.error('刷新accessToken失败，请重新登录')
     ElMessage.error('刷新accessToken失败，请重新登录')
+    useRouter().push({ name: 'UserLoginView' })
     return Promise.reject()
   }
   const userStore = useUserStore()
-  const { accessToken, refreshToken } = res.data
+  const { accessToken, refreshToken, userId } = res.data
   userStore.accessToken = accessToken
   userStore.refreshToken = refreshToken
+  userStore.userId = userId
 }
 
 /**
@@ -75,7 +77,7 @@ export const getAccessTokenExpireAt = () => {
 }
 
 // Token刷新计时器
-const REFRESH_BEFORE_EXPIRE = 5 * 60 * 1000 // 提前 5 分钟刷新
+export const REFRESH_BEFORE_EXPIRE = 5 * 60 * 1000 // 提前 5 分钟刷新
 let refreshTimer = null
 /**
  * 启动定时器，定时刷新token
@@ -87,15 +89,15 @@ export const startTokenRefreshTimer = async () => {
   const now = Date.now()
   const expireAt = getAccessTokenExpireAt()
   const delay = expireAt - now - REFRESH_BEFORE_EXPIRE
-  if (delay > 0) {
-    refreshTimer = setTimeout(async () => {
-      await processRefreshToken()
-    }, delay)
-    console.log(`启动AccessToken定时刷新，${delay / 1000} 秒后刷新`)
-  } else {
-    console.warn('accessToken即将过期，不启动定时刷新，直接刷新')
-    processRefreshToken()
+  if (delay <= 0) {
+    console.warn('accessToken即将过期，立刻刷新')
+    await processRefreshToken()
   }
+  refreshTimer = setTimeout(async () => {
+    await processRefreshToken()
+    await startTokenRefreshTimer()
+  }, delay)
+  console.log(`启动AccessToken定时刷新，${delay / 1000} 秒后刷新`)
 }
 
 /**
@@ -106,4 +108,30 @@ export function stopTokenRefreshTimer() {
     clearTimeout(refreshTimer)
     refreshTimer = null
   }
+}
+/**
+ * 初始用户登陆状态
+ * @returns 初始登陆状态是否成功
+ */
+export const initUserLoginStatus = async () => {
+  // 初始化用户登录状态
+  const userStore = useUserStore()
+  // 判断AccessToken是否临近过期或已过期
+  const expireDuration = getAccessTokenExpireAt() - Date.now() - REFRESH_BEFORE_EXPIRE
+  if (expireDuration > 0) {
+    // AccessToken未过期，直接获取用户信息
+    const res = await loginByToken()
+    if (!res.status === RESPONSE_SUCCESS) {
+      processLogout()
+      return Promise.reject(res.message)
+    }
+    const { userId } = res.data
+    userStore.userId = userId
+    userStore.isLogin = true
+  } else {
+    // AccessToken已过期，刷新AccessToken
+    await processRefreshToken()
+    userStore.isLogin = true
+  }
+  await startTokenRefreshTimer()
 }

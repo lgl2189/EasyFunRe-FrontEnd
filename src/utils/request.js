@@ -2,6 +2,7 @@ import axios from 'axios'
 import { ElMessage } from 'element-plus'
 import { useUserStore } from '@/stores/user'
 import { HEADER_AUTHORIZATION, HEADER_DEVICE_ID, HEADER_FINGERPRINT } from '@/constant/header-constant'
+import { useRouter } from 'vue-router'
 
 // 创建Axios实例
 const request = axios.create({
@@ -27,11 +28,14 @@ request.interceptors.request.use(
 // 响应拦截器：统一处理结果
 request.interceptors.response.use(
   (response) => {
+    if (response.data.status >= 30000 && response.data.status < 40000) {
+      ElMessage.error('未登录，请先登录！')
+      useRouter().push({ name: 'UserLoginView' })
+    }
     return response.data
   },
   (error) => {
     ElMessage.error('网络错误，请稍后再试！\n' + error.message)
-
     return Promise.reject(error)
   },
 )

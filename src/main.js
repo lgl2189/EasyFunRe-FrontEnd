@@ -1,5 +1,6 @@
-// 解决滚轮事件性能警告
-// import 'default-passive-events'
+// css+less导入
+import './assets/css/base.less'
+import './assets/css/global.css'
 // 核心依赖导入（略，保留原导入逻辑）
 import { createApp } from 'vue'
 import App from './App.vue'
@@ -11,7 +12,6 @@ import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import isYesterday from 'dayjs/plugin/isYesterday'
 import { pinia } from './stores/pinia'
 import router from './router'
-import './assets/less/base.less'
 import { initUserEnvironment } from './utils/init-environment'
 import * as yup from 'yup'
 import { socketCenter } from './utils/stomp-center'
