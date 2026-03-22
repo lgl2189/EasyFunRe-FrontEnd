@@ -125,7 +125,7 @@ export const initUserLoginStatus = async () => {
   if (expireDuration > 0) {
     // AccessToken未过期，直接获取用户信息
     const res = await loginByToken()
-    if (!res.status === RESPONSE_SUCCESS) {
+    if (res.status !== RESPONSE_SUCCESS) {
       processLogout()
       return Promise.reject(res.message)
     }
