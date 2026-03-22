@@ -1,5 +1,9 @@
 import { loginByToken, refreshAccessToken } from '@/apis/user'
 import { RESPONSE_SUCCESS } from '@/constant/response-constant'
+// useRouter和useRoute依赖的inject函数只能在vue文件的setup函数中调用，不能在其他地方调用
+// 因此，这里使用直接导入router对象代替，但是router对象不能响应式更新，也就是无法获取路由实时变化
+// router使用在跳转场景没有问题
+import router from '@/router'
 import { useUserStore } from '@/stores/user'
 import { ElMessage } from 'element-plus'
 
@@ -25,7 +29,7 @@ export const processRefreshToken = async () => {
   if (res.status !== RESPONSE_SUCCESS) {
     console.error('刷新accessToken失败，请重新登录')
     ElMessage.error('刷新accessToken失败，请重新登录')
-    useRouter().push({ name: 'UserLoginView' })
+    router.push({ name: 'UserLoginView' })
     return Promise.reject()
   }
   const userStore = useUserStore()

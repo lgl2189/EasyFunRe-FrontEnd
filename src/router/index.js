@@ -1,3 +1,4 @@
+import { useUserStore } from '@/stores/user'
 import { createRouter } from 'vue-router'
 import { createWebHistory } from 'vue-router'
 
@@ -16,11 +17,13 @@ const routes = [
         path: 'center',
         name: 'UserCenterView',
         component: () => import('@/views/user/UserCenterView.vue'),
+        meta: { requireLogin: true },
       },
       {
         path: 'space',
         // name: 'UserSpaceView',
         // component: () => import('@/views/user/UserSpaceView.vue'),
+        meta: { requireLogin: true },
       },
       {
         path: 'login',
@@ -47,3 +50,10 @@ const router = createRouter({
 })
 
 export default router
+
+router.beforeEach((to, from) => {
+  if (to.meta.requireLogin && useUserStore().isLogin === false) {
+    // 如果目标页面需要登录，并且未登录，则跳转到登录页面
+    return { name: 'UserLoginView', query: { redirect: to.fullPath } }
+  }
+})
