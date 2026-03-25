@@ -101,7 +101,7 @@ export const startTokenRefreshTimer = async () => {
     await processRefreshToken()
     await startTokenRefreshTimer()
   }, delay)
-  console.log(`启动AccessToken定时刷新，${delay / 1000} 秒后刷新`)
+  // console.log(`启动AccessToken定时刷新，${delay / 1000} 秒后刷新`)
 }
 
 /**

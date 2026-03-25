@@ -68,3 +68,42 @@ export const logoutUser = () => {
 export const getRSAPublicKey = () => {
   return request.get('/auth/rsa/public')
 }
+/**
+ * 获取用户所有信息
+ * @returns
+ */
+export const getUserInfoAll = () => {
+  return request.get('/user/account/info-all')
+}
+/**
+ * 获取用户公开信息
+ * @returns
+ */
+export const getUserInfoPublic = () => {
+  return request.get('/user/account/info-public')
+}
+/**
+ * 更新用户信息
+ * @param {Object} userInfo 必须包含这些属性，属性为空则必须设置为null
+ * @property {userId,username,avatarUrl,gender,birthday,introduction}
+ * @returns
+ */
+export const updateUserInfoAll = (userInfo) => {
+  const { userId, username, avatarUrl, gender, birthday, introduction } = userInfo
+
+  return request.put('/user/account/info-all', { userId, username, avatarUrl, gender, birthday, introduction })
+}
+/**
+ * 更新用户密码
+ * @param {Object} passwordInfo 必须包含这些属性，旧密码为空则必须设置为null，其余不能为空
+ * @property {userId,oldPassword, newPassword}
+ * @returns
+ */
+export const updateUserPassword = (passwordInfo) => {
+  const { userId, oldPassword, newPassword } = passwordInfo
+  return request.put('/user/account/password', {
+    userId,
+    oldPassword,
+    newPassword,
+  })
+}
