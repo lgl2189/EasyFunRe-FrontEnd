@@ -7,9 +7,6 @@ import App from './App.vue'
 import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
-import dayjs from 'dayjs'
-import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
-import isYesterday from 'dayjs/plugin/isYesterday'
 import { pinia } from './stores/pinia'
 import router from './router'
 import { initUserEnvironment } from './utils/init-environment'
@@ -17,8 +14,22 @@ import * as yup from 'yup'
 import { socketCenter } from './utils/stomp-center'
 export default yup
 // 配置 dayjs 插件
+import dayjs from 'dayjs'
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
+import isYesterday from 'dayjs/plugin/isYesterday'
+import utc from 'dayjs/plugin/utc'
+import timezone from 'dayjs/plugin/timezone'
+import 'dayjs/locale/zh-cn' // 引入中文
+import relativeTime from 'dayjs/plugin/relativeTime'
+import isToday from 'dayjs/plugin/isToday'
+
+dayjs.extend(utc)
+dayjs.extend(timezone)
 dayjs.extend(isSameOrBefore)
 dayjs.extend(isYesterday)
+dayjs.locale('zh-cn') // 设置全局为中文
+dayjs.extend(relativeTime)
+dayjs.extend(isToday)
 
 // 异步初始化函数（定义在前，调用在后）
 async function init() {
@@ -26,7 +37,7 @@ async function init() {
     // 初始化用户环境
     await initUserEnvironment()
     // 初始化 socket 连接
-    socketCenter.init()
+    // socketCenter.init()
   } catch (error) {}
   return Promise.resolve()
 }
