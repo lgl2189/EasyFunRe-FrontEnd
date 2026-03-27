@@ -5,7 +5,7 @@ import { useRouter } from 'vue-router'
 const router = useRouter()
 
 const goToHome = () => {
-  router.push({ name: 'HomeView' })
+  router.push({ name: 'MainHomeView' })
 }
 </script>
 

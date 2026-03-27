@@ -3,35 +3,53 @@ import { createRouter } from 'vue-router'
 import { createWebHistory } from 'vue-router'
 
 const routes = [
+  // 主功能路由
   {
     path: '/',
-    name: 'HomeView',
-    component: () => import('@/views/HomeView.vue'),
+    // 别名只用于同级映射，不会生成子路径的路由
     alias: ['/home'],
-    children: [],
-  },
-  {
-    path: '/user',
+    name: 'MainHomeView',
+    component: () => import('@/views/main/MainHomeView.vue'),
     children: [
       {
-        path: 'center',
-        name: 'UserCenterView',
-        component: () => import('@/views/user/UserCenterView.vue'),
-        meta: { requireLogin: true },
-      },
-      {
-        path: 'space',
-        name: 'UserSpaceView',
-        component: () => import('@/views/user/UserSpaceView.vue'),
-        meta: { requireLogin: true },
-      },
-      {
-        path: 'login',
-        name: 'UserLoginView',
-        component: () => import('@/views/user/UserLoginView.vue'),
+        path: '/user',
+        children: [
+          {
+            path: 'center',
+            name: 'UserCenterView',
+            component: () => import('@/views/main/user/UserCenterView.vue'),
+            meta: { requireLogin: true },
+          },
+          {
+            path: 'space',
+            name: 'UserSpaceView',
+            component: () => import('@/views/main/user/UserSpaceView.vue'),
+            meta: { requireLogin: true },
+          },
+          {
+            path: 'login',
+            name: 'UserLoginView',
+            component: () => import('@/views/main/user/UserLoginView.vue'),
+          },
+        ],
       },
     ],
   },
+  // 创作中心路由
+  {
+    path: '/creation',
+    name: 'CreationCenterView',
+    component: () => import('@/views/creation/CreationCenterView.vue'),
+    children: [
+      {
+        path: 'home',
+      },
+      {
+        path: 'upload',
+      },
+    ],
+  },
+  // 错误页面路由
   {
     path: '/error',
     children: [
