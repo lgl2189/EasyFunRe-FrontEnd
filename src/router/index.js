@@ -21,8 +21,8 @@ const routes = [
       },
       {
         path: 'space',
-        // name: 'UserSpaceView',
-        // component: () => import('@/views/user/UserSpaceView.vue'),
+        name: 'UserSpaceView',
+        component: () => import('@/views/user/UserSpaceView.vue'),
         meta: { requireLogin: true },
       },
       {
