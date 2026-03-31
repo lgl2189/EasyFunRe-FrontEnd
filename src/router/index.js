@@ -38,14 +38,18 @@ const routes = [
   // 创作中心路由
   {
     path: '/creation',
+    alias: ['/creation/home'],
     name: 'CreationCenterView',
     component: () => import('@/views/creation/CreationCenterView.vue'),
+    meta: { requireLogin: true },
     children: [
       {
         path: 'home',
       },
       {
         path: 'upload',
+        name: 'CreationUploadView',
+        component: () => import('@/views/creation/upload/CreationUploadView.vue'),
       },
     ],
   },
