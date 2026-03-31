@@ -117,13 +117,13 @@ const afterLogin = () => {
   if (route.query?.redirect && route.query.redirect.startsWith('/')) {
     router.push(route.query.redirect)
   } else {
-    router.push({ name: 'HomeView' })
+    router.push({ name: 'MainHomeView' })
   }
 }
 
 onMounted(() => {
   if (useUserStore().isLogin) {
-    router.push({ name: 'HomeView' })
+    router.push({ name: 'MainHomeView' })
   }
 })
 
