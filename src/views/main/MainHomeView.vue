@@ -1,5 +1,8 @@
 <script setup>
 import HeaderComponent from '@/components/common/HeaderComponent.vue'
+import PostListView from './post/PostListView.vue'
+import { useRoute } from 'vue-router'
+const route = useRoute()
 </script>
 <template>
   <div class="main-home-container">
@@ -7,7 +10,8 @@ import HeaderComponent from '@/components/common/HeaderComponent.vue'
       <HeaderComponent />
     </div>
     <div class="main-body">
-      <router-view></router-view>
+      <PostListView v-if="route.name === 'MainHomeView'"></PostListView>
+      <router-view v-else></router-view>
     </div>
   </div>
 </template>

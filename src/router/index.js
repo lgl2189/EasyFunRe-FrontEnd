@@ -8,6 +8,7 @@ const routes = [
     path: '/',
     // 别名只用于同级映射，不会生成子路径的路由
     alias: ['/home'],
+    redirect: '',
     name: 'MainHomeView',
     component: () => import('@/views/main/MainHomeView.vue'),
     children: [
@@ -30,6 +31,21 @@ const routes = [
             path: 'login',
             name: 'UserLoginView',
             component: () => import('@/views/main/user/UserLoginView.vue'),
+          },
+        ],
+      },
+      {
+        path: '/post',
+        children: [
+          {
+            path: 'video',
+            children: [
+              {
+                path: 'watch/:postId',
+                name: 'VideoWatchView',
+                component: () => import('@/views/main/video/VideoWatchView.vue'),
+              },
+            ],
           },
         ],
       },

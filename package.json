@@ -16,6 +16,7 @@
     "dayjs": "^1.11.19",
     "default-passive-events": "^4.0.0",
     "element-plus": "^2.13.2",
+    "lodash-es": "^4.18.1",
     "pinia": "^3.0.4",
     "pinia-plugin-persistedstate": "^4.7.1",
     "vee-validate": "^4.15.1",
