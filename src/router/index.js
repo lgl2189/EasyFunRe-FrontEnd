@@ -1,4 +1,6 @@
 import { useUserStore } from '@/stores/user'
+import { name } from 'dayjs/locale/zh-cn'
+import component from 'element-plus/es/components/tree-select/src/tree-select-option.mjs'
 import { createRouter } from 'vue-router'
 import { createWebHistory } from 'vue-router'
 
@@ -44,6 +46,22 @@ const routes = [
                 path: 'watch/:postId',
                 name: 'VideoWatchView',
                 component: () => import('@/views/main/video/VideoWatchView.vue'),
+              },
+            ],
+          },
+          {
+            path: 'recommend/config',
+            name: 'RecommendConfigView',
+            component: () => import('@/views/main/recommend/RecommendConfigView.vue'),
+          },
+          {
+            path: 'tag',
+            children: [
+              {
+                path: 'initial',
+                name: 'InitialTagView',
+                component: () => import('@/views/main/post/InitialTagView.vue'),
+                meta: { requireLogin: true },
               },
             ],
           },

@@ -13,7 +13,7 @@ import { ElMessage } from 'element-plus'
  */
 export const processInitialLogin = (res) => {
   const userStore = useUserStore()
-  const { accessToken, refreshToken, userId, newDevice, deviceId } = res.data
+  const { accessToken, refreshToken, userId, newDevice, deviceId, isNewUser } = res.data
   if (newDevice == true) {
     userStore.deviceId = deviceId
   }

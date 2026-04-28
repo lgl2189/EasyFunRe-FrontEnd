@@ -56,3 +56,25 @@ export const searchPostByKeyword = (pageNum, pageSize, keywordList) => {
   const url = `/content/post/search?pageNum=${pageNum}&pageSize=${pageSize}&${keywordParams}`
   return request.get(url)
 }
+/**
+ * 获取兴趣标签列表
+ */
+export const getTagList = () => {
+  return request.get('/content/recommend/tag/list')
+}
+/**
+ * 获取用户的兴趣标签列表
+ */
+export const initialUserTagList = (tagList) => {
+  return request.post('/content/recommend/tag/initial', tagList)
+}
+/**
+ * 获取用户推荐参数
+ */
+export const getUserRecommendParam = () => {
+  return request.get('/content/recommend/param')
+}
+
+export const updateUserRecommendParam = (alpha, wDiv, wBound) => {
+  return request.post(`/content/recommend/param?alpha=${alpha}&wDiv=${wDiv}&wBound=${wBound}`)
+}

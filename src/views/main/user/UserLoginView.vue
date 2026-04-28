@@ -107,18 +107,17 @@ const handlePhoneLogin = async () => {
   if (res.status === RESPONSE_SUCCESS) {
     processInitialLogin(res)
     ElMessage.success('登录成功')
-    afterLogin()
+    if (res.data.iwNewUser === true) {
+      router.push({ name: '' })
+    }
+    if (route.query?.redirect && route.query.redirect.startsWith('/')) {
+      router.push(route.query.redirect)
+    } else {
+      router.push({ name: 'MainHomeView' })
+    }
     return
   }
   ElMessage.error(res.message)
-}
-
-const afterLogin = () => {
-  if (route.query?.redirect && route.query.redirect.startsWith('/')) {
-    router.push(route.query.redirect)
-  } else {
-    router.push({ name: 'MainHomeView' })
-  }
 }
 
 onMounted(() => {
