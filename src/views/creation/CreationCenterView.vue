@@ -9,9 +9,7 @@
         <div class="header-left">
           <span class="easyfun-logo">EasyFun</span>
           <span class="creation-title">创作中心</span>
-          <a href="#" class="main-site-link">
-            <span>主站</span>
-          </a>
+          <router-link :to="{ name: 'MainHomeView' }" target="_blank" class="main-site-link"> 主站 </router-link>
         </div>
 
         <!-- 右侧用户信息 -->
@@ -116,6 +114,9 @@
       font-size: 14px;
       text-decoration: none;
       padding: 0 20px;
+      &:hover {
+        color: #00a1d6;
+      }
     }
   }
 

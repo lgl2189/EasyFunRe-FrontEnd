@@ -1,105 +1,174 @@
 <script setup>
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import { Loading } from '@element-plus/icons-vue'
+import { useRouter } from 'vue-router'
 
 const props = defineProps({
-  columns: {
-    type: Number,
-    default: 5,
-  },
-  // 支持传入初始视频列表
-  initialPostList: {
-    type: Array,
-    default: () => [],
-  },
+  columns: { type: Number, default: 5 },
+  initialPostList: { type: Array, default: () => [] },
+  minInterval: { type: Number, default: 500 },
 })
 
 const emits = defineEmits(['load-post'])
-
-const posts = ref([])
+const router = useRouter()
+const postList = ref([])
 const loading = ref(false)
 const loadTrigger = ref(null)
 let observer = null
-// 防止重复检查和无限加载
-const isChecking = ref(false)
 
-const addNewPost = (newPosts) => {
-  if (newPosts && Array.isArray(newPosts)) {
-    posts.value.push(...newPosts)
-  }
-  loading.value = false
-  // 加载完成后检测是否需要继续加载
-  nextTick(() => {
-    checkIfNeedMoreLoad()
-  })
-}
+const noMore = ref(false)
+const consecutiveEmpty = ref(0)
+const lastLoadTime = ref(0)
+const pendingLoad = ref(false)
+let intervalTimer = null
 
-const loadMore = () => {
-  if (!loading.value) {
-    loading.value = true
-    emits('load-post')
-  }
-}
-
-// 检查当前内容是否已撑满视口，如果没有出现窗口滚动条则继续加载
+// 函数
 const checkIfNeedMoreLoad = () => {
-  if (isChecking.value || loading.value) return
-  isChecking.value = true
+  if (loading.value || noMore.value) {
+    return false
+  }
 
-  // 使用窗口滚动高度判断当前内容是否已撑满视口
+  // 优先通过 loadTrigger 的位置判断是否在视口内或接近视口
+  if (loadTrigger.value) {
+    const rect = loadTrigger.value.getBoundingClientRect()
+    const windowHeight = window.innerHeight || document.documentElement.clientHeight
+
+    // 如果触发器距离视口底部小于等于 300px（与 IntersectionObserver 的 rootMargin 保持一致）
+    // rect.bottom > 0 用于排除 display:none 或完全不可见的情况
+    if (rect.bottom > 0 && rect.top <= windowHeight + 300) {
+      loadMore(false)
+      return true
+    }
+  }
+
+  // 备用：使用 document 高度判断内容是否已撑满视口
   const scrollHeight = document.documentElement.scrollHeight
   const clientHeight = document.documentElement.clientHeight
 
-  // 增加少量容差，避免边界抖动
-  const hasEnoughContent = scrollHeight > clientHeight + 50
-
-  // 只有内容不足以产生滚动条时才继续加载
-  if (!hasEnoughContent) {
-    loadMore()
+  // 如果内容高度明显小于视口高度（留50px容差），则需要继续加载
+  if (scrollHeight < clientHeight + 50) {
+    loadMore(false)
+    return true
   }
-
-  isChecking.value = false
+  return false
 }
 
-onMounted(() => {
-  // 初始化时使用传入的初始数据
-  if (props.initialPostList && props.initialPostList.length > 0) {
-    posts.value = [...props.initialPostList]
+// 监听窗口大小变化（如缩放、调整窗口），以防内容在缩放后未撑满屏幕且未触发 IntersectionObserver
+const handleResize = () => {
+  if (!loading.value && !noMore.value) {
+    checkIfNeedMoreLoad()
+  }
+}
+
+const addNewPostList = (newPosts) => {
+  loading.value = false
+
+  if (newPosts && Array.isArray(newPosts) && newPosts.length > 0) {
+    postList.value.push(...newPosts)
+    consecutiveEmpty.value = 0
+  } else {
+    consecutiveEmpty.value++
+    // 保险机制：如果连续5次加载都没有新内容，认定为异常或已加载完毕
+    if (consecutiveEmpty.value >= 5) {
+      noMore.value = true
+    }
   }
 
-  loadMore()
+  nextTick(() => {
+    // 加载完成后检查是否需要继续加载（解决初始内容不足问题）
+    if (!noMore.value) {
+      // 第一次检查
+      const needMore = checkIfNeedMoreLoad()
+
+      // 如果还是不够，延迟再检查一次（防止DOM渲染未完成）
+      if (!needMore) {
+        setTimeout(() => {
+          checkIfNeedMoreLoad()
+        }, 100)
+      }
+    }
+  })
+}
+
+const loadMore = (isTrigger = false) => {
+  if (loading.value || noMore.value) {
+    return
+  }
+
+  const now = Date.now()
+  const elapsed = now - lastLoadTime.value
+
+  // 如果是触发器触发，检查最小时间间隔
+  if (isTrigger) {
+    if (elapsed < props.minInterval) {
+      // 如果已经在等待缓存的加载，则不再重复缓存
+      if (!pendingLoad.value) {
+        pendingLoad.value = true
+        const remaining = props.minInterval - elapsed
+        clearTimeout(intervalTimer)
+        intervalTimer = setTimeout(() => {
+          pendingLoad.value = false
+          loadMore(true)
+        }, remaining)
+      }
+      return
+    }
+  }
+
+  // 执行实际加载前，清除任何待处理的缓存加载和定时器
+  pendingLoad.value = false
+  if (intervalTimer) {
+    clearTimeout(intervalTimer)
+    intervalTimer = null
+  }
+
+  lastLoadTime.value = Date.now()
+  loading.value = true
+  emits('load-post')
+}
+const handleClickPostCard = (postId) => {
+  router.push({ name: 'VideoWatchView', params: { postId } })
+}
+onMounted(() => {
+  if (props.initialPostList?.length > 0) {
+    postList.value = [...props.initialPostList]
+  }
+
+  nextTick(() => {
+    loadMore(false) // 首次加载，不应用最小间隔
+  })
 
   observer = new IntersectionObserver(
     (entries) => {
       if (entries[0].isIntersecting) {
-        loadMore()
+        loadMore(true) // 触发器触发，应用最小间隔
       }
     },
-    {
-      rootMargin: '100px',
-    },
+    { rootMargin: '300px' },
   )
 
   if (loadTrigger.value) {
     observer.observe(loadTrigger.value)
   }
+
+  window.addEventListener('resize', handleResize)
 })
 
 onUnmounted(() => {
-  if (observer) {
-    observer.disconnect()
+  observer?.disconnect()
+  if (intervalTimer) {
+    clearTimeout(intervalTimer)
   }
+  window.removeEventListener('resize', handleResize)
 })
 
-defineExpose({
-  addNewPost,
-})
+defineExpose({ addNewPostList })
 </script>
 
 <template>
   <div class="post-list">
     <div class="post-grid" :style="{ gridTemplateColumns: `repeat(${props.columns}, 1fr)` }">
-      <div v-for="post in posts" :key="post.postId" class="video-card">
+      <div v-for="post in postList" :key="post.postId" class="post-card" @click="handleClickPostCard(post.postId)">
         <div class="cover">
           <img :src="post.coverUrl" alt="投稿封面" />
         </div>
@@ -116,7 +185,7 @@ defineExpose({
       </div>
     </div>
 
-    <el-empty v-if="posts.length === 0 && !loading" description="暂无投稿" />
+    <el-empty v-if="postList.length === 0 && !loading" description="暂无投稿" />
 
     <div v-if="loading" class="loading-indicator">
       <el-icon :size="20">
@@ -125,10 +194,13 @@ defineExpose({
       <span>加载中...</span>
     </div>
 
-    <div ref="loadTrigger" class="load-trigger" />
+    <!-- 加载触发器 -->
+    <div v-if="!noMore" ref="loadTrigger" class="load-trigger" />
+
+    <!-- 没有更多时显示提示 -->
+    <div v-if="noMore && postList.length > 0" class="no-more">没有更多投稿了</div>
   </div>
 </template>
-
 <style lang="less" scoped>
 .post-list {
   width: 100%;
@@ -139,12 +211,13 @@ defineExpose({
     padding-bottom: 20px;
   }
 
-  .video-card {
+  .post-card {
     background: #ffffff;
     border-radius: 12px;
     overflow: hidden;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    cursor: pointer;
 
     &:hover {
       transform: translateY(-6px);

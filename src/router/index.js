@@ -1,6 +1,4 @@
 import { useUserStore } from '@/stores/user'
-import { name } from 'dayjs/locale/zh-cn'
-import component from 'element-plus/es/components/tree-select/src/tree-select-option.mjs'
 import { createRouter } from 'vue-router'
 import { createWebHistory } from 'vue-router'
 
@@ -53,6 +51,7 @@ const routes = [
             path: 'recommend/config',
             name: 'RecommendConfigView',
             component: () => import('@/views/main/recommend/RecommendConfigView.vue'),
+            meta: { requireLogin: true },
           },
           {
             path: 'tag',

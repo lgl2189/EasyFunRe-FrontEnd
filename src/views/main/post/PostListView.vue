@@ -1,17 +1,25 @@
 <script setup>
-import { getRecommendPostList } from '@/apis/content'
+import { getRandomPostList, getRecommendPostList } from '@/apis/content'
 import InfiniteScrollPostList from '@/components/post/InfiniteScrollPostList.vue'
 import { RESPONSE_SUCCESS } from '@/constant/response-constant'
+import { useUserStore } from '@/stores/user'
 import { ref } from 'vue'
-// TODO：为登录时无法加载投稿列表，因为没有userId，没有做处理，可以先补充一个必须登陆提示
 // 变量
 const postListRef = ref(null)
+const userStore = useUserStore()
+const hotPostPageNum = ref(0)
 
 // 函数
 const handleLoadPost = async () => {
-  const res = await getRecommendPostList()
+  let res
+  if (userStore.userId) {
+    res = await getRecommendPostList()
+  } else {
+    hotPostPageNum.value = hotPostPageNum.value + 1
+    res = await getRandomPostList(10, hotPostPageNum.value)
+  }
   if (res.status === RESPONSE_SUCCESS) {
-    postListRef.value?.addNewPost(res.data)
+    postListRef.value?.addNewPostList(res.data.postList)
   }
 }
 </script>

@@ -19,6 +19,15 @@ export const uploadVideoPost = (formdata, config = {}) => {
 export const getPost = (postId) => {
   return request.get('/content/post/' + postId)
 }
+/**
+ * 获取热门投稿列表
+ * @param {Number} pageSize 每页数量
+ * @param {Number} pageNum 页码
+ * @returns 热门投稿列表
+ */
+export const getRandomPostList = (pageSize = 10, pageNum = 1) => {
+  return request.get(`/content/post/hot/list?pageSize=${pageSize}&pageNum=${pageNum}`)
+}
 
 /**
  * 获取推荐的投稿列表

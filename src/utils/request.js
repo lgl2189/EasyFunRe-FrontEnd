@@ -30,7 +30,7 @@ request.interceptors.response.use(
   (response) => {
     if (response.data.status >= 30000 && response.data.status < 40000) {
       ElMessage.error('未登录，请先登录！')
-      router().push({ name: 'UserLoginView' })
+      router.push({ name: 'UserLoginView' })
     }
     return response.data
   },

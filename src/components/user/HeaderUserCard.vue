@@ -30,7 +30,7 @@ const userInfo = ref({
 // 跳转个人空间
 const handleGoToSpace = () => {
   // 个人空间地址可自行配置
-  router.push('')
+  router.push({ name: 'UserCenterView' })
 }
 
 // 退出登录处理
@@ -100,7 +100,7 @@ const handleLogout = () => {
       <!-- 功能操作区（使用UniversalActionBtn组件） -->
       <div class="func-wrapper">
         <!-- 个人中心 -->
-        <UniversalActionBtn type="button" @click="handleGoToSpace" class="func-btn">
+        <UniversalActionBtn type="button" class="func-btn" @click="handleGoToSpace">
           <el-icon class="func-icon"><User /></el-icon>
           <span class="func-text">个人中心</span>
           <el-icon class="arrow-icon"><ArrowRight /></el-icon>
@@ -108,9 +108,11 @@ const handleLogout = () => {
 
         <!-- 投稿管理 -->
         <UniversalActionBtn type="button" class="func-btn">
-          <el-icon class="func-icon"><VideoPlay /></el-icon>
-          <span class="func-text">投稿管理</span>
-          <el-icon class="arrow-icon"><ArrowRight /></el-icon>
+          <router-link class="func-btn-inner" :to="{ name: 'CreationCenterView' }" target="_blank">
+            <el-icon class="func-icon"><VideoPlay /></el-icon>
+            <span class="func-text">投稿管理</span>
+            <el-icon class="arrow-icon"><ArrowRight /></el-icon>
+          </router-link>
         </UniversalActionBtn>
 
         <!-- 推荐服务 -->
@@ -278,6 +280,16 @@ const handleLogout = () => {
         background-color: #ebeef5;
       }
 
+      // 适配内部包裹 router-link 的情况
+      .func-btn-inner {
+        display: flex;
+        align-items: center;
+        width: 100%;
+        gap: 12px;
+        text-decoration: none;
+        color: inherit;
+      }
+
       .func-icon {
         font-size: 20px;
         color: #606266;
@@ -287,6 +299,7 @@ const handleLogout = () => {
         flex: 1;
         font-size: 16px;
         color: #303133;
+        text-align: left;
       }
 
       .arrow-icon {
