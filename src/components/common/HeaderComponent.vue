@@ -26,7 +26,9 @@ const handleClickLoginBtn = () => {
 <template>
   <div class="header">
     <div class="logo-wrap"></div>
-    <div class="header-primary"></div>
+    <router-link class="header-primary" to="/home">
+      <img src="@/assets/icons/png/logo/logo-transparent.png" alt="logo" class="logo" width="120px" height="80px" />
+    </router-link>
     <div class="header-search"></div>
     <div class="header-user">
       <div class="user-login-btn" v-if="userStore.isLogin === false">

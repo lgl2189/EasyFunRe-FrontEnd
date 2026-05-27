@@ -84,17 +84,6 @@ const handleLogout = () => {
             <span class="data-label">动态</span>
           </div>
         </div>
-
-        <!-- 福利提示横幅 -->
-        <div class="benefit-banner">
-          <div class="benefit-text">
-            <p class="benefit-title">您的特惠福利已到账</p>
-            <p class="benefit-desc">大会员x联合会员低至4.0折</p>
-          </div>
-          <UniversalActionBtn type="link" text-color="#ff699e" background-color="transparent" class="member-btn">
-            会员中心
-          </UniversalActionBtn>
-        </div>
       </div>
 
       <!-- 功能操作区（使用UniversalActionBtn组件） -->
@@ -117,9 +106,11 @@ const handleLogout = () => {
 
         <!-- 推荐服务 -->
         <UniversalActionBtn type="button" class="func-btn">
-          <el-icon class="func-icon"><Star /></el-icon>
-          <span class="func-text">推荐服务</span>
-          <el-icon class="arrow-icon"><ArrowRight /></el-icon>
+          <router-link class="func-btn-inner" :to="{ name: 'RecommendConfigView' }" target="_blank">
+            <el-icon class="func-icon"><Star /></el-icon>
+            <span class="func-text">推荐服务</span>
+            <el-icon class="arrow-icon"><ArrowRight /></el-icon>
+          </router-link>
         </UniversalActionBtn>
 
         <!-- 主题设置 -->

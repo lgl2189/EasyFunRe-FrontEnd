@@ -1,7 +1,6 @@
 <script setup>
 import { ref, onMounted, onUnmounted, nextTick } from 'vue'
 import { Loading } from '@element-plus/icons-vue'
-import { useRouter } from 'vue-router'
 
 const props = defineProps({
   columns: { type: Number, default: 5 },
@@ -10,7 +9,6 @@ const props = defineProps({
 })
 
 const emits = defineEmits(['load-post'])
-const router = useRouter()
 const postList = ref([])
 const loading = ref(false)
 const loadTrigger = ref(null)
@@ -126,9 +124,7 @@ const loadMore = (isTrigger = false) => {
   loading.value = true
   emits('load-post')
 }
-const handleClickPostCard = (postId) => {
-  router.push({ name: 'VideoWatchView', params: { postId } })
-}
+
 onMounted(() => {
   if (props.initialPostList?.length > 0) {
     postList.value = [...props.initialPostList]
@@ -168,7 +164,7 @@ defineExpose({ addNewPostList })
 <template>
   <div class="post-list">
     <div class="post-grid" :style="{ gridTemplateColumns: `repeat(${props.columns}, 1fr)` }">
-      <div v-for="post in postList" :key="post.postId" class="post-card" @click="handleClickPostCard(post.postId)">
+      <router-link v-for="post in postList" :key="post.postId" class="post-card" :to="{ name: 'VideoWatchView', params: { postId: post.postId } }" target="_blank">
         <div class="cover">
           <img :src="post.coverUrl" alt="投稿封面" />
         </div>
@@ -182,7 +178,7 @@ defineExpose({ addNewPostList })
             <span>{{ post.likeCount }}点赞</span>
           </div>
         </div>
-      </div>
+      </router-link>
     </div>
 
     <el-empty v-if="postList.length === 0 && !loading" description="暂无投稿" />
@@ -212,6 +208,9 @@ defineExpose({ addNewPostList })
   }
 
   .post-card {
+    display: block;
+    text-decoration: none;
+    color: inherit;
     background: #ffffff;
     border-radius: 12px;
     overflow: hidden;
